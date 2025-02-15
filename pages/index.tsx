@@ -1,9 +1,7 @@
 import { getDefaultUpVideos } from '@/lib/api'
 import VideoCard from '@/components/VideoCard'
 
-export default async function Home() {
-  const videos = await getDefaultUpVideos()
-
+export default function Home({ videos }: { videos: any[] }) {
   return (
     <div>
       <h1 className="text-2xl font-bold mb-4">学习类视频</h1>
@@ -14,4 +12,9 @@ export default async function Home() {
       </div>
     </div>
   )
+}
+
+export async function getServerSideProps() {
+  const videos = await getDefaultUpVideos()
+  return { props: { videos } }
 } 
