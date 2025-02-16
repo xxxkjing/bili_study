@@ -1,35 +1,55 @@
 import React from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 
 interface VideoCardProps {
   id: string
   title: string
   description: string
   thumbnail?: string
+  author: string
+  views: number
+  duration: string
 }
 
-const VideoCard = ({ id, title, description, thumbnail }: VideoCardProps) => {
+const VideoCard = ({
+  id,
+  title,
+  description,
+  thumbnail,
+  author,
+  views,
+  duration
+}: VideoCardProps) => {
   return (
-    <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-duration-300">
-      {thumbnail && (
-        <div className="aspect-video bg-gray-100">
-          <img
-            src={thumbnail}
-            alt={title}
-            className="w-full h-full object-cover"
-          />
+    <div className="group bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300">
+      <Link href={`/video/${id}`}>
+        <div className="relative aspect-video bg-gray-100">
+          {thumbnail && (
+            <Image
+              src={thumbnail}
+              alt={title}
+              fill
+              className="object-cover transition-transform duration-300 group-hover:scale-105"
+            />
+          )}
+          <div className="absolute bottom-2 right-2 px-2 py-1 bg-black/70 text-white text-sm rounded">
+            {duration}
+          </div>
         </div>
-      )}
-      <div className="p-4">
-        <h2 className="text-xl font-semibold mb-2 line-clamp-2">{title}</h2>
-        <p className="text-gray-600 mb-4 line-clamp-2">{description}</p>
-        <Link 
-          href={`/video/${id}`}
-          className="inline-block px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
-        >
-          观看视频
-        </Link>
-      </div>
+        <div className="p-4">
+          <h3 className="text-lg font-medium line-clamp-2 group-hover:text-primary-main transition-colors">
+            {title}
+          </h3>
+          <p className="mt-2 text-sm text-text-secondary line-clamp-2">
+            {description}
+          </p>
+          <div className="mt-4 flex items-center justify-between text-sm text-text-secondary">
+            <span>{author}</span>
+            <span>{views.toLocaleString()} 次观看</span>
+          </div>
+        </div>
+      </Link>
     </div>
   )
 }
