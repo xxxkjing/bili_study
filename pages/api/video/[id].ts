@@ -41,16 +41,25 @@ export default async function handler(
           'Referer': 'https://www.bilibili.com',
           'Cookie': process.env.BILIBILI_COOKIE || '',
           'Origin': 'https://www.bilibili.com'
-        }
+        },
+        validateStatus: (status) => status < 500 // 不要让axios抛出错误
       }
     )
 
+    // 检查响应
     if (infoResponse.data.code !== 0) {
       console.error('B站API返回错误:', infoResponse.data)
-      throw new Error(infoResponse.data.message || '获取视频信息失败')
+      return res.status(404).json({ 
+        error: infoResponse.data.message || '视频不存在或已被删除',
+        code: infoResponse.data.code
+      })
     }
 
     const videoInfo = infoResponse.data.data
+    if (!videoInfo) {
+      return res.status(404).json({ error: '视频不存在' })
+    }
+
     const cid = videoInfo.cid
 
     // 获取视频流URL
@@ -62,13 +71,17 @@ export default async function handler(
           'Referer': 'https://www.bilibili.com',
           'Cookie': process.env.BILIBILI_COOKIE || '',
           'Origin': 'https://www.bilibili.com'
-        }
+        },
+        validateStatus: (status) => status < 500
       }
     )
 
     if (playUrlResponse.data.code !== 0) {
       console.error('获取视频地址失败:', playUrlResponse.data)
-      throw new Error(playUrlResponse.data.message || '获取视频播放地址失败')
+      return res.status(403).json({ 
+        error: playUrlResponse.data.message || '无法获取视频播放地址',
+        code: playUrlResponse.data.code
+      })
     }
 
     const videoData: VideoData = {
@@ -84,9 +97,9 @@ export default async function handler(
         playlists: [
           {
             id: 'pl1',
-            title: '前端开发教程',
+            title: videoInfo.title,
             cover: videoInfo.pic,
-            videoCount: 12,
+            videoCount: 1,
             updateTime: new Date().toISOString()
           }
         ]
@@ -108,7 +121,6 @@ export default async function handler(
     const errorMessage = error instanceof Error ? error.message : '获取视频信息失败'
     console.error('Error details:', errorMessage)
     
-    // 返回更详细的错误信息
     res.status(500).json({ 
       error: errorMessage,
       details: error instanceof Error ? error.stack : undefined,

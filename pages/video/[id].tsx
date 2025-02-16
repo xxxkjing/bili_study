@@ -1,6 +1,6 @@
 /** @jsxImportSource react */
 import { useRouter } from 'next/router'
-import React, { ReactElement } from 'react'
+import React, { ReactElement, useState } from 'react'
 import Layout from '../../components/Layout'
 import VideoPlayer from '../../components/VideoPlayer'
 import LoadingSpinner from '../../components/LoadingSpinner'
@@ -19,6 +19,7 @@ interface VideoInfo {
     description: string
     followerCount: number
     videoCount: number
+    isFollowing?: boolean
     playlists: {
       id: string
       title: string
@@ -39,6 +40,41 @@ const VideoPage = (): ReactElement => {
   const [videoInfo, setVideoInfo] = React.useState<VideoInfo | null>(null)
   const [isLoading, setIsLoading] = React.useState(true)
   const [error, setError] = React.useState<string | null>(null)
+  const [isFollowing, setIsFollowing] = useState(false)
+
+  const handleFollow = async () => {
+    try {
+      const response = await fetch('/api/follow', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          upId: videoInfo?.uploader.id,
+          action: !isFollowing ? 'follow' : 'unfollow'
+        })
+      })
+
+      if (!response.ok) {
+        throw new Error('关注失败')
+      }
+
+      setIsFollowing(!isFollowing)
+      // 更新UP主粉丝数
+      if (videoInfo) {
+        setVideoInfo({
+          ...videoInfo,
+          uploader: {
+            ...videoInfo.uploader,
+            followerCount: videoInfo.uploader.followerCount + (isFollowing ? -1 : 1)
+          }
+        })
+      }
+    } catch (err) {
+      console.error('关注操作失败:', err)
+      alert('关注失败，请稍后重试')
+    }
+  }
 
   const fetchVideoInfo = React.useCallback(async () => {
     if (!id) return
@@ -89,11 +125,25 @@ const VideoPage = (): ReactElement => {
             />
 
             <div className="mt-4 bg-white rounded-lg shadow p-4">
-              <h1 className="text-2xl font-bold mb-2">{videoInfo.title}</h1>
-              <div className="flex items-center text-gray-600 text-sm mb-4">
-                <span>{videoInfo.uploader.name}</span>
-                <span className="mx-2">•</span>
-                <span>{new Date(videoInfo.pubdate * 1000).toLocaleDateString()}</span>
+              <div className="flex items-center justify-between mb-4">
+                <div>
+                  <h1 className="text-2xl font-bold mb-2">{videoInfo.title}</h1>
+                  <div className="flex items-center text-gray-600 text-sm">
+                    <span>{videoInfo.uploader.name}</span>
+                    <span className="mx-2">•</span>
+                    <span>{new Date(videoInfo.pubdate * 1000).toLocaleDateString()}</span>
+                  </div>
+                </div>
+                <button
+                  onClick={handleFollow}
+                  className={`px-6 py-2 rounded-full transition-colors ${
+                    isFollowing 
+                      ? 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                      : 'bg-primary-main text-white hover:bg-primary-dark'
+                  }`}
+                >
+                  {isFollowing ? '已关注' : '+ 关注'}
+                </button>
               </div>
               <p className="text-gray-700">{videoInfo.description}</p>
             </div>
@@ -120,6 +170,8 @@ const VideoPage = (): ReactElement => {
           <UploaderSidebar 
             uploader={videoInfo.uploader}
             currentVideoId={id as string}
+            isFollowing={isFollowing}
+            onFollow={handleFollow}
           />
         </div>
       </div>

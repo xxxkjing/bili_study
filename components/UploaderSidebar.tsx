@@ -6,6 +6,8 @@ import type { Uploader, Playlist } from '../types/uploader'
 interface UploaderSidebarProps {
   uploader: Uploader
   currentVideoId?: string
+  isFollowing?: boolean
+  onFollow?: () => void
 }
 
 const PlaylistItem = ({ playlist, currentVideoId }: { playlist: Playlist, currentVideoId?: string }) => (
@@ -34,7 +36,12 @@ const PlaylistItem = ({ playlist, currentVideoId }: { playlist: Playlist, curren
   </Link>
 )
 
-const UploaderSidebar: React.FC<UploaderSidebarProps> = ({ uploader, currentVideoId }) => {
+const UploaderSidebar: React.FC<UploaderSidebarProps> = ({ 
+  uploader, 
+  currentVideoId,
+  isFollowing,
+  onFollow
+}) => {
   return (
     <div className="w-80 flex-shrink-0">
       <div className="sticky top-20 bg-white rounded-lg shadow p-4">
@@ -55,8 +62,15 @@ const UploaderSidebar: React.FC<UploaderSidebarProps> = ({ uploader, currentVide
               {uploader.followerCount.toLocaleString()} 粉丝 · {uploader.videoCount} 视频
             </div>
           </div>
-          <button className="px-4 py-2 bg-primary-main text-white rounded-full hover:bg-primary-dark transition-colors">
-            关注
+          <button 
+            onClick={onFollow}
+            className={`px-4 py-2 rounded-full transition-colors ${
+              isFollowing 
+                ? 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                : 'bg-primary-main text-white hover:bg-primary-dark'
+            }`}
+          >
+            {isFollowing ? '已关注' : '+ 关注'}
           </button>
         </div>
 
