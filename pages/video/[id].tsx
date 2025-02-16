@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router'
 import type { NextPage } from 'next'
-import React, { type ReactElement } from 'react'
+import React from 'react'
 import Head from 'next/head'
 
 // 定义组件接口
@@ -13,7 +13,7 @@ interface CommentSectionProps {
 }
 
 // 创建组件
-const VideoPlayer = ({ videoId }: VideoPlayerProps): ReactElement => {
+const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoId }) => {
   return (
     <div className="w-full aspect-video bg-black">
       <iframe
@@ -29,7 +29,7 @@ const VideoPlayer = ({ videoId }: VideoPlayerProps): ReactElement => {
   )
 }
 
-const CommentSection = ({ videoId }: CommentSectionProps): ReactElement => {
+const CommentSection: React.FC<CommentSectionProps> = ({ videoId }) => {
   return (
     <div className="mt-4 p-4 bg-white rounded-lg shadow">
       <h2 className="text-xl font-bold mb-4">评论区</h2>
