@@ -7,12 +7,12 @@ interface VideoPlayerProps {
   title: string
 }
 
-const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoUrl, title }) => {
+const VideoPlayer = ({ videoUrl, title }: VideoPlayerProps): JSX.Element => {
   const videoRef = useRef<HTMLVideoElement>(null)
-  const playerRef = useRef<Plyr>()
+  const playerRef = useRef<Plyr | null>(null)
 
   useEffect(() => {
-    if (videoRef.current) {
+    if (videoRef.current && !playerRef.current) {
       playerRef.current = new Plyr(videoRef.current, {
         controls: [
           'play-large',
@@ -33,7 +33,10 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoUrl, title }) => {
     }
 
     return () => {
-      playerRef.current?.destroy()
+      if (playerRef.current) {
+        playerRef.current.destroy()
+        playerRef.current = null
+      }
     }
   }, [videoUrl])
 
@@ -46,6 +49,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoUrl, title }) => {
         playsInline
       >
         <source src={videoUrl} type="video/mp4" />
+        Your browser does not support the video tag.
       </video>
     </div>
   )
