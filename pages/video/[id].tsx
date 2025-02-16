@@ -11,13 +11,6 @@ import UploaderSidebar from '../../components/UploaderSidebar'
 interface VideoInfo {
   title: string
   description: string
-  owner: {
-    name: string
-  }
-  urls: {
-    [key: string]: string
-  }
-  pubdate: number
   uploader: {
     id: string
     name: string
@@ -33,6 +26,10 @@ interface VideoInfo {
       updateTime: string
     }[]
   }
+  urls: {
+    [key: string]: string
+  }
+  pubdate: number
 }
 
 const VideoPage = (): ReactElement => {
@@ -81,7 +78,7 @@ const VideoPage = (): ReactElement => {
   }
 
   return (
-    <Layout>
+    <Layout title={videoInfo.title}>
       <Head>
         <title>{`${videoInfo.title} - Bilibili 学习`}</title>
       </Head>
