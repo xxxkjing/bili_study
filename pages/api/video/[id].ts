@@ -42,7 +42,7 @@ export default async function handler(
           'Cookie': process.env.BILIBILI_COOKIE || '',
           'Origin': 'https://www.bilibili.com'
         },
-        validateStatus: (status) => status < 500 // 不要让axios抛出错误
+        validateStatus: (status) => status < 500
       }
     )
 
@@ -76,11 +76,20 @@ export default async function handler(
       }
     )
 
-    if (playUrlResponse.data.code !== 0) {
+    if (playUrlResponse.data.code !== 0 || !playUrlResponse.data.data) {
       console.error('获取视频地址失败:', playUrlResponse.data)
       return res.status(403).json({ 
         error: playUrlResponse.data.message || '无法获取视频播放地址',
         code: playUrlResponse.data.code
+      })
+    }
+
+    // 检查是否有可用的视频URL
+    const videoUrls = playUrlResponse.data.data.durl
+    if (!videoUrls || videoUrls.length === 0) {
+      return res.status(403).json({ 
+        error: '无法获取视频播放地址',
+        code: 'NO_VIDEO_URL'
       })
     }
 
@@ -105,7 +114,7 @@ export default async function handler(
         ]
       },
       urls: {
-        '1': playUrlResponse.data.data.durl[0].url
+        '1': videoUrls[0].url
       },
       pubdate: videoInfo.pubdate
     }

@@ -1,6 +1,6 @@
 /** @jsxImportSource react */
 import { useRouter } from 'next/router'
-import React, { ReactElement, useState } from 'react'
+import React, { ReactElement } from 'react'
 import Layout from '../../components/Layout'
 import VideoPlayer from '../../components/VideoPlayer'
 import LoadingSpinner from '../../components/LoadingSpinner'
@@ -40,9 +40,11 @@ const VideoPage = (): ReactElement => {
   const [videoInfo, setVideoInfo] = React.useState<VideoInfo | null>(null)
   const [isLoading, setIsLoading] = React.useState(true)
   const [error, setError] = React.useState<string | null>(null)
-  const [isFollowing, setIsFollowing] = useState(false)
+  const [isFollowing, setIsFollowing] = React.useState(false)
 
   const handleFollow = async () => {
+    if (!videoInfo) return
+
     try {
       const response = await fetch('/api/follow', {
         method: 'POST',
@@ -50,7 +52,7 @@ const VideoPage = (): ReactElement => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          upId: videoInfo?.uploader.id,
+          upId: videoInfo.uploader.id,
           action: !isFollowing ? 'follow' : 'unfollow'
         })
       })
@@ -60,16 +62,13 @@ const VideoPage = (): ReactElement => {
       }
 
       setIsFollowing(!isFollowing)
-      // 更新UP主粉丝数
-      if (videoInfo) {
-        setVideoInfo({
-          ...videoInfo,
-          uploader: {
-            ...videoInfo.uploader,
-            followerCount: videoInfo.uploader.followerCount + (isFollowing ? -1 : 1)
-          }
-        })
-      }
+      setVideoInfo({
+        ...videoInfo,
+        uploader: {
+          ...videoInfo.uploader,
+          followerCount: videoInfo.uploader.followerCount + (isFollowing ? -1 : 1)
+        }
+      })
     } catch (err) {
       console.error('关注操作失败:', err)
       alert('关注失败，请稍后重试')
