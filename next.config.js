@@ -8,6 +8,9 @@ const nextConfig = {
       use: ['style-loader', 'css-loader']
     })
     return config
+  },
+  images: {
+    domains: ['api.dicebear.com']
   }
 }
 

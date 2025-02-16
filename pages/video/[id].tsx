@@ -4,6 +4,7 @@ import Layout from '../../components/Layout'
 import VideoPlayer from '../../components/VideoPlayer'
 import LoadingSpinner from '../../components/LoadingSpinner'
 import ErrorMessage from '../../components/ErrorMessage'
+import CommentSection from '../../components/CommentSection'
 
 interface VideoInfo {
   title: string
@@ -90,13 +91,8 @@ const VideoPage = (): ReactElement => {
           </button>
         </div>
 
-        {/* 评论区 */}
-        <div className="mt-8 bg-white rounded-lg shadow p-4">
-          <h2 className="text-xl font-bold mb-4">评论区</h2>
-          <div className="text-gray-600">
-            评论功能开发中...
-          </div>
-        </div>
+        {/* 添加评论组件 */}
+        <CommentSection videoId={id as string} />
       </div>
     </Layout>
   )

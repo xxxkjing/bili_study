@@ -1,43 +1,43 @@
 import React, { useRef, useEffect } from 'react'
-import Plyr from 'plyr'
-import 'plyr/dist/plyr.css'
+import dynamic from 'next/dynamic'
 
 interface VideoPlayerProps {
   videoUrl: string
   title: string
 }
 
+// 动态导入Plyr，只在客户端加载
 const VideoPlayer = ({ videoUrl, title }: VideoPlayerProps): JSX.Element => {
   const videoRef = useRef<HTMLVideoElement>(null)
-  const playerRef = useRef<any>(null)
 
   useEffect(() => {
-    if (videoRef.current && !playerRef.current) {
-      playerRef.current = new Plyr(videoRef.current, {
-        controls: [
-          'play-large',
-          'play',
-          'progress',
-          'current-time',
-          'mute',
-          'volume',
-          'settings',
-          'fullscreen'
-        ],
-        settings: ['quality', 'speed'],
-        quality: {
-          default: 1080,
-          options: [1080, 720, 480, 360]
-        }
-      })
-    }
+    // 在客户端动态导入和初始化Plyr
+    const initPlyr = async () => {
+      if (videoRef.current) {
+        const Plyr = (await import('plyr')).default
+        import('plyr/dist/plyr.css')
+        
+        const player = new Plyr(videoRef.current, {
+          controls: [
+            'play-large',
+            'play',
+            'progress',
+            'current-time',
+            'mute',
+            'volume',
+            'settings',
+            'fullscreen'
+          ],
+          settings: ['quality', 'speed']
+        })
 
-    return () => {
-      if (playerRef.current) {
-        playerRef.current.destroy()
-        playerRef.current = null
+        return () => {
+          player.destroy()
+        }
       }
     }
+
+    initPlyr()
   }, [videoUrl])
 
   return (
@@ -56,4 +56,7 @@ const VideoPlayer = ({ videoUrl, title }: VideoPlayerProps): JSX.Element => {
   )
 }
 
-export default VideoPlayer 
+// 使用dynamic导入组件，禁用SSR
+export default dynamic(() => Promise.resolve(VideoPlayer), {
+  ssr: false
+}) 
