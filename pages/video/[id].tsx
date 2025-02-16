@@ -1,5 +1,6 @@
 import { useRouter } from 'next/router'
-import { FC } from 'react'
+import type { NextPage } from 'next'
+import React from 'react'
 
 // 定义组件接口
 interface VideoPlayerProps {
@@ -11,7 +12,7 @@ interface CommentSectionProps {
 }
 
 // 创建组件
-const VideoPlayer: FC<VideoPlayerProps> = ({ videoId }) => {
+const VideoPlayer = ({ videoId }: VideoPlayerProps): React.ReactElement => {
   return (
     <div>
       {/* 视频播放器实现 */}
@@ -20,7 +21,7 @@ const VideoPlayer: FC<VideoPlayerProps> = ({ videoId }) => {
   )
 }
 
-const CommentSection: FC<CommentSectionProps> = ({ videoId }) => {
+const CommentSection = ({ videoId }: CommentSectionProps): React.ReactElement => {
   return (
     <div>
       {/* 评论区实现 */}
@@ -30,7 +31,7 @@ const CommentSection: FC<CommentSectionProps> = ({ videoId }) => {
 }
 
 // 主页面组件
-const VideoPage: FC = () => {
+const VideoPage: NextPage = () => {
   const router = useRouter()
   const { id } = router.query
   
