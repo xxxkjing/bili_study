@@ -12,7 +12,7 @@ export interface VideoCardProps {
   duration: string
 }
 
-const VideoCard = ({
+const VideoCard: React.FC<VideoCardProps> = ({
   id,
   title,
   description,
@@ -20,19 +20,20 @@ const VideoCard = ({
   author,
   views,
   duration
-}: VideoCardProps) => {
+}) => {
   return (
     <div className="group bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300">
       <Link href={`/video/${id}`}>
         <div className="relative aspect-video bg-gray-100">
-          {thumbnail && (
-            <Image
-              src={thumbnail}
-              alt={title}
-              fill
-              className="object-cover transition-transform duration-300 group-hover:scale-105"
-            />
-          )}
+          <Image
+            src={thumbnail}
+            alt={title}
+            fill
+            className="object-cover transition-transform duration-300 group-hover:scale-105"
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            priority
+            unoptimized
+          />
           <div className="absolute bottom-2 right-2 px-2 py-1 bg-black/70 text-white text-sm rounded">
             {duration}
           </div>
