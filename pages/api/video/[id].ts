@@ -62,13 +62,13 @@ export default async function handler(
 
     const cid = videoInfo.cid
 
-    // 获取视频流URL
+    // 获取视频流URL - 使用新的API
     const playUrlResponse = await axios.get(
-      `https://api.bilibili.com/x/player/playurl?bvid=${id}&cid=${cid}&qn=80&fnval=16`,
+      `https://api.bilibili.com/x/player/wbi/playurl?bvid=${id}&cid=${cid}&qn=80&fnval=4048&fourk=1`,
       {
         headers: {
           'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-          'Referer': 'https://www.bilibili.com',
+          'Referer': `https://www.bilibili.com/video/${id}`,
           'Cookie': process.env.BILIBILI_COOKIE || '',
           'Origin': 'https://www.bilibili.com'
         },
@@ -85,15 +85,17 @@ export default async function handler(
     }
 
     // 检查是否有可用的视频URL
-    const videoUrls = playUrlResponse.data.data.durl
-    if (!videoUrls || videoUrls.length === 0) {
+    const videoData = playUrlResponse.data.data
+    const videoUrl = videoData.dash?.video?.[0]?.baseUrl || videoData.durl?.[0]?.url
+
+    if (!videoUrl) {
       return res.status(403).json({ 
         error: '无法获取视频播放地址',
         code: 'NO_VIDEO_URL'
       })
     }
 
-    const videoData: VideoData = {
+    const responseData: VideoData = {
       title: videoInfo.title,
       description: videoInfo.desc,
       uploader: {
@@ -114,7 +116,7 @@ export default async function handler(
         ]
       },
       urls: {
-        '1': videoUrls[0].url
+        '1': videoUrl
       },
       pubdate: videoInfo.pubdate
     }
@@ -124,7 +126,7 @@ export default async function handler(
     res.setHeader('Access-Control-Allow-Methods', 'GET')
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type')
 
-    res.status(200).json(videoData)
+    res.status(200).json(responseData)
   } catch (error) {
     console.error('Error fetching video data:', error)
     const errorMessage = error instanceof Error ? error.message : '获取视频信息失败'

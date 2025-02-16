@@ -1,14 +1,14 @@
-import React from 'react'
+import React, { ReactNode } from 'react'
 import Head from 'next/head'
 import Link from 'next/link'
 import { theme } from '../styles/theme'
 
 interface LayoutProps {
-  children: React.ReactNode
+  children: ReactNode
   title?: string
 }
 
-const Layout = ({ children, title = 'Bilibili 学习' }: LayoutProps) => {
+const Layout: React.FC<LayoutProps> = ({ children, title = 'Bilibili 学习' }) => {
   return (
     <div className="min-h-screen bg-gray-50">
       {title && (

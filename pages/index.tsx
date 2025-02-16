@@ -1,8 +1,8 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
-import VideoCard from '../components/VideoCard'
+import VideoCard, { VideoCardProps } from '../components/VideoCard'
 
-interface VideoCardData {
+interface VideoCardData extends Omit<VideoCardProps, 'key'> {
   id: string
   title: string
   description: string
@@ -42,13 +42,7 @@ const Home: NextPage = () => {
           {exampleVideos.map(video => (
             <VideoCard
               key={video.id}
-              id={video.id}
-              title={video.title}
-              description={video.description}
-              thumbnail={video.thumbnail}
-              author={video.author}
-              views={video.views}
-              duration={video.duration}
+              {...video}
             />
           ))}
         </div>
