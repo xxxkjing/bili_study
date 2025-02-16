@@ -20,10 +20,10 @@ const VideoPlayer = ({ videoId }: VideoPlayerProps): JSX.Element => {
         className="w-full h-full"
         src={`//player.bilibili.com/player.html?bvid=${videoId}&page=1`}
         scrolling="no"
-        border="0"
-        frameBorder="no"
-        framespacing="0"
-        allowFullScreen={true}
+        frameBorder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowFullScreen
+        style={{ border: 0 }}
       ></iframe>
     </div>
   )
