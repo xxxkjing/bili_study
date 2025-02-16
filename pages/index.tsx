@@ -2,12 +2,8 @@ import type { NextPage } from 'next'
 import Head from 'next/head'
 import VideoCard, { VideoCardProps } from '../components/VideoCard'
 
-type VideoCardData = Omit<VideoCardProps, 'key'> & {
-  id: string
-}
-
 const Home: NextPage = () => {
-  const exampleVideos: VideoCardData[] = [
+  const exampleVideos: VideoCardProps[] = [
     {
       id: 'BV1AEKNeZEf7',
       title: '示例视频 1',
@@ -32,10 +28,10 @@ const Home: NextPage = () => {
         </h1>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {exampleVideos.map(({ id, ...videoProps }) => (
+          {exampleVideos.map(video => (
             <VideoCard
-              key={id}
-              {...videoProps}
+              key={video.id}
+              {...video}
             />
           ))}
         </div>
