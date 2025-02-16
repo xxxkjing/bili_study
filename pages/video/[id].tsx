@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router'
 import type { NextPage } from 'next'
-import React from 'react'
+import type { ReactElement } from 'react'
 import Head from 'next/head'
 
 // 定义组件接口
@@ -13,7 +13,7 @@ interface CommentSectionProps {
 }
 
 // 创建组件
-const VideoPlayer = ({ videoId }: VideoPlayerProps): JSX.Element => {
+const VideoPlayer = ({ videoId }: VideoPlayerProps): ReactElement => {
   return (
     <div className="w-full aspect-video bg-black">
       <iframe
@@ -24,12 +24,12 @@ const VideoPlayer = ({ videoId }: VideoPlayerProps): JSX.Element => {
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
         allowFullScreen
         style={{ border: 0 }}
-      ></iframe>
+      />
     </div>
   )
 }
 
-const CommentSection = ({ videoId }: CommentSectionProps): JSX.Element => {
+const CommentSection = ({ videoId }: CommentSectionProps): ReactElement => {
   return (
     <div className="mt-4 p-4 bg-white rounded-lg shadow">
       <h2 className="text-xl font-bold mb-4">评论区</h2>
