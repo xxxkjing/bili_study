@@ -11,11 +11,13 @@ interface LayoutProps {
 const Layout = ({ children, title = 'Bilibili 学习' }: LayoutProps) => {
   return (
     <div className="min-h-screen bg-gray-50">
-      <Head>
-        <title>{title}</title>
-        <meta name="description" content="纯净的bilibili学习平台" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+      {title && (
+        <Head>
+          <title>{title}</title>
+          <meta name="description" content="纯净的bilibili学习平台" />
+          <link rel="icon" href="/favicon.ico" />
+        </Head>
+      )}
 
       <header className="bg-white border-b sticky top-0 z-50">
         <nav className="container mx-auto px-4 h-16 flex items-center justify-between">

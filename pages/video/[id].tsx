@@ -78,7 +78,7 @@ const VideoPage = (): ReactElement => {
   }
 
   return (
-    <Layout title={videoInfo.title}>
+    <Layout>
       <Head>
         <title>{`${videoInfo.title} - Bilibili 学习`}</title>
       </Head>
