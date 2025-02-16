@@ -13,7 +13,7 @@ interface CommentSectionProps {
 }
 
 // 创建组件
-const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoId }) => {
+const VideoPlayer = ({ videoId }: VideoPlayerProps) => {
   return (
     <div className="w-full aspect-video bg-black">
       <iframe
@@ -29,7 +29,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoId }) => {
   )
 }
 
-const CommentSection: React.FC<CommentSectionProps> = ({ videoId }) => {
+const CommentSection = ({ videoId }: CommentSectionProps) => {
   return (
     <div className="mt-4 p-4 bg-white rounded-lg shadow">
       <h2 className="text-xl font-bold mb-4">评论区</h2>
