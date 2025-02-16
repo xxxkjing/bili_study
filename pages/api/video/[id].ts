@@ -39,12 +39,14 @@ export default async function handler(
         headers: {
           'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
           'Referer': 'https://www.bilibili.com',
-          'Cookie': process.env.BILIBILI_COOKIE || ''
+          'Cookie': process.env.BILIBILI_COOKIE || '',
+          'Origin': 'https://www.bilibili.com'
         }
       }
     )
 
     if (infoResponse.data.code !== 0) {
+      console.error('B站API返回错误:', infoResponse.data)
       throw new Error(infoResponse.data.message || '获取视频信息失败')
     }
 
@@ -53,16 +55,19 @@ export default async function handler(
 
     // 获取视频流URL
     const playUrlResponse = await axios.get(
-      `https://api.bilibili.com/x/player/playurl?bvid=BV1pbN2eMEK4&cid=${cid}&qn=80&fnval=16`,
+      `https://api.bilibili.com/x/player/playurl?bvid=${id}&cid=${cid}&qn=80&fnval=16`,
       {
         headers: {
           'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-          'Referer': 'https://www.bilibili.com'
+          'Referer': 'https://www.bilibili.com',
+          'Cookie': process.env.BILIBILI_COOKIE || '',
+          'Origin': 'https://www.bilibili.com'
         }
       }
     )
 
     if (playUrlResponse.data.code !== 0) {
+      console.error('获取视频地址失败:', playUrlResponse.data)
       throw new Error(playUrlResponse.data.message || '获取视频播放地址失败')
     }
 
@@ -103,9 +108,11 @@ export default async function handler(
     const errorMessage = error instanceof Error ? error.message : '获取视频信息失败'
     console.error('Error details:', errorMessage)
     
+    // 返回更详细的错误信息
     res.status(500).json({ 
       error: errorMessage,
-      details: error instanceof Error ? error.stack : undefined
+      details: error instanceof Error ? error.stack : undefined,
+      message: '视频可能不存在或需要登录才能访问'
     })
   }
 } 
