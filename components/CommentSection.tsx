@@ -6,13 +6,67 @@ interface CommentSectionProps {
   videoId: string
 }
 
+const CommentItem = ({ comment }: { comment: Comment }) => {
+  return (
+    <div className="border-b pb-6 last:border-b-0">
+      <div className="flex space-x-4">
+        <Image
+          src={comment.user.avatar}
+          alt={comment.user.name}
+          width={40}
+          height={40}
+          className="rounded-full flex-shrink-0"
+        />
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="font-semibold text-text-primary hover:text-primary-main transition-colors">
+              {comment.user.name}
+            </span>
+            <span className="text-text-secondary text-sm">
+              {new Date(comment.createdAt).toLocaleDateString('zh-CN', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+              })}
+            </span>
+          </div>
+          <p className="mt-2 text-text-primary whitespace-pre-wrap break-words">
+            {comment.content}
+          </p>
+          <div className="mt-2 flex items-center gap-4 text-sm text-text-secondary">
+            <div className="flex items-center gap-1">
+              <span className="text-lg">👍</span>
+              <span>{comment.likes > 999 ? `${(comment.likes/1000).toFixed(1)}k` : comment.likes}</span>
+            </div>
+            {comment.replies && comment.replies.length > 0 && (
+              <span className="text-text-secondary">
+                {comment.replies.length} 条回复
+              </span>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* 回复列表 */}
+      {comment.replies && comment.replies.length > 0 && (
+        <div className="ml-14 mt-4 space-y-6 pl-4 border-l border-gray-100">
+          {comment.replies.map((reply) => (
+            <CommentItem key={reply.id} comment={reply} />
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
 const CommentSection: React.FC<CommentSectionProps> = ({ videoId }) => {
   const [comments, setComments] = useState<Comment[]>([])
-  const [newComment, setNewComment] = useState('')
   const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    // 获取评论数据
     const fetchComments = async () => {
       try {
         const response = await fetch(`/api/comments/${videoId}`)
@@ -20,6 +74,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({ videoId }) => {
         setComments(data)
       } catch (error) {
         console.error('Failed to fetch comments:', error)
+        setError('评论加载失败')
       } finally {
         setIsLoading(false)
       }
@@ -28,116 +83,62 @@ const CommentSection: React.FC<CommentSectionProps> = ({ videoId }) => {
     fetchComments()
   }, [videoId])
 
-  const handleSubmitComment = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!newComment.trim()) return
+  if (isLoading) {
+    return (
+      <div className="mt-8 bg-white rounded-lg shadow p-6">
+        <div className="animate-pulse space-y-4">
+          <div className="h-6 bg-gray-200 rounded w-24"></div>
+          <div className="space-y-6">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="flex space-x-4">
+                <div className="rounded-full bg-gray-200 h-10 w-10"></div>
+                <div className="flex-1 space-y-3">
+                  <div className="h-4 bg-gray-200 rounded w-1/4"></div>
+                  <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    )
+  }
 
-    try {
-      const response = await fetch('/api/comments', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          videoId,
-          content: newComment,
-        }),
-      })
-
-      const data = await response.json()
-      setComments(prev => [data, ...prev])
-      setNewComment('')
-    } catch (error) {
-      console.error('Failed to post comment:', error)
-    }
+  if (error) {
+    return (
+      <div className="mt-8 bg-white rounded-lg shadow p-6">
+        <div className="text-red-500 text-center">
+          {error}
+          <button
+            onClick={() => window.location.reload()}
+            className="ml-4 text-primary-main hover:underline"
+          >
+            重试
+          </button>
+        </div>
+      </div>
+    )
   }
 
   return (
-    <div className="mt-8 bg-white rounded-lg shadow p-4">
-      <h2 className="text-xl font-bold mb-4">评论区</h2>
-      
-      {/* 评论输入框 */}
-      <form onSubmit={handleSubmitComment} className="mb-6">
-        <div className="flex gap-4">
-          <textarea
-            value={newComment}
-            onChange={(e) => setNewComment(e.target.value)}
-            placeholder="发表你的评论..."
-            className="flex-1 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            rows={3}
-          />
-          <button
-            type="submit"
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors h-fit"
-            disabled={!newComment.trim()}
-          >
-            发表评论
-          </button>
-        </div>
-      </form>
-
-      {/* 评论列表 */}
-      {isLoading ? (
-        <div className="text-center py-4">加载评论中...</div>
-      ) : (
-        <div className="space-y-4">
-          {comments.map((comment) => (
-            <div key={comment.id} className="border-b pb-4">
-              <div className="flex items-start gap-3">
-                <Image
-                  src={comment.user.avatar}
-                  alt={comment.user.name}
-                  width={40}
-                  height={40}
-                  className="rounded-full"
-                />
-                <div className="flex-1">
-                  <div className="flex items-center gap-2">
-                    <span className="font-semibold">{comment.user.name}</span>
-                    <span className="text-gray-500 text-sm">
-                      {new Date(comment.createdAt).toLocaleDateString()}
-                    </span>
-                  </div>
-                  <p className="mt-1 text-gray-700">{comment.content}</p>
-                  <div className="mt-2 flex items-center gap-4 text-sm text-gray-500">
-                    <button className="hover:text-blue-600 flex items-center gap-1">
-                      <span>👍</span>
-                      <span>{comment.likes}</span>
-                    </button>
-                    <button className="hover:text-blue-600">回复</button>
-                  </div>
-                </div>
-              </div>
-              
-              {/* 回复列表 */}
-              {comment.replies && comment.replies.length > 0 && (
-                <div className="ml-12 mt-4 space-y-4">
-                  {comment.replies.map((reply) => (
-                    <div key={reply.id} className="flex items-start gap-3">
-                      <Image
-                        src={reply.user.avatar}
-                        alt={reply.user.name}
-                        width={32}
-                        height={32}
-                        className="rounded-full"
-                      />
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2">
-                          <span className="font-semibold">{reply.user.name}</span>
-                          <span className="text-gray-500 text-sm">
-                            {new Date(reply.createdAt).toLocaleDateString()}
-                          </span>
-                        </div>
-                        <p className="mt-1 text-gray-700">{reply.content}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-      )}
+    <div className="mt-8 bg-white rounded-lg shadow p-6">
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-xl font-bold text-text-primary">评论区</h2>
+        <span className="text-text-secondary">
+          {comments.length} 条评论
+        </span>
+      </div>
+      <div className="space-y-6">
+        {comments.length > 0 ? (
+          comments.map((comment) => (
+            <CommentItem key={comment.id} comment={comment} />
+          ))
+        ) : (
+          <div className="text-center py-8 text-text-secondary">
+            暂无评论，快来发表第一条评论吧
+          </div>
+        )}
+      </div>
     </div>
   )
 }

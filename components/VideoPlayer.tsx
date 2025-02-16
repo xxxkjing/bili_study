@@ -1,5 +1,6 @@
 import React, { useRef, useEffect } from 'react'
 import dynamic from 'next/dynamic'
+import 'plyr/dist/plyr.css' // 这会被Next.js自动处理
 
 interface VideoPlayerProps {
   videoUrl: string

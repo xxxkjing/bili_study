@@ -2,6 +2,37 @@
 @tailwind components;
 @tailwind utilities;
 
+/* 自定义样式 */
+.text-primary-main {
+  color: #1a73e8;
+}
+
+.bg-primary-main {
+  background-color: #1a73e8;
+}
+
+.hover\:bg-primary-dark:hover {
+  background-color: #185abc;
+}
+
+.text-text-primary {
+  color: #202124;
+}
+
+.text-text-secondary {
+  color: #5f6368;
+}
+
+/* Plyr播放器样式覆盖 */
+:root {
+  --plyr-color-main: #1a73e8;
+}
+
+.plyr {
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
 html,
 body {
   padding: 0;

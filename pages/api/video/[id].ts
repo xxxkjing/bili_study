@@ -4,8 +4,20 @@ import axios from 'axios'
 interface VideoData {
   title: string
   description: string
-  owner: {
+  uploader: {
+    id: string
     name: string
+    avatar: string
+    description: string
+    followerCount: number
+    videoCount: number
+    playlists: {
+      id: string
+      title: string
+      cover: string
+      videoCount: number
+      updateTime: string
+    }[]
   }
   urls: {
     [key: string]: string
@@ -56,8 +68,29 @@ export default async function handler(
     const videoData: VideoData = {
       title: videoInfo.title,
       description: videoInfo.desc,
-      owner: {
-        name: videoInfo.owner.name
+      uploader: {
+        id: videoInfo.owner.mid,
+        name: videoInfo.owner.name,
+        avatar: videoInfo.owner.face,
+        description: '这是UP主的简介',
+        followerCount: 10000,
+        videoCount: 100,
+        playlists: [
+          {
+            id: 'pl1',
+            title: '前端开发教程',
+            cover: 'https://example.com/cover1.jpg',
+            videoCount: 12,
+            updateTime: new Date().toISOString()
+          },
+          {
+            id: 'pl2',
+            title: 'React实战课程',
+            cover: 'https://example.com/cover2.jpg',
+            videoCount: 8,
+            updateTime: new Date().toISOString()
+          }
+        ]
       },
       urls: {
         '1': playUrlResponse.data.data.durl[0].url

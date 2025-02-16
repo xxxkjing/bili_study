@@ -5,6 +5,8 @@ import VideoPlayer from '../../components/VideoPlayer'
 import LoadingSpinner from '../../components/LoadingSpinner'
 import ErrorMessage from '../../components/ErrorMessage'
 import CommentSection from '../../components/CommentSection'
+import Head from 'next/head'
+import UploaderSidebar from '../../components/UploaderSidebar'
 
 interface VideoInfo {
   title: string
@@ -16,6 +18,21 @@ interface VideoInfo {
     [key: string]: string
   }
   pubdate: number
+  uploader: {
+    id: string
+    name: string
+    avatar: string
+    description: string
+    followerCount: number
+    videoCount: number
+    playlists: {
+      id: string
+      title: string
+      cover: string
+      videoCount: number
+      updateTime: string
+    }[]
+  }
 }
 
 const VideoPage = (): ReactElement => {
@@ -64,41 +81,53 @@ const VideoPage = (): ReactElement => {
   }
 
   return (
-    <Layout title={`${videoInfo.title} - Bilibili 学习`}>
-      <div className="max-w-4xl mx-auto">
-        <VideoPlayer 
-          videoUrl={videoInfo.urls['1']} 
-          title={videoInfo.title}
-        />
+    <Layout>
+      <Head>
+        <title>{`${videoInfo.title} - Bilibili 学习`}</title>
+      </Head>
+      <div className="container mx-auto px-4">
+        <div className="flex gap-8">
+          {/* 主内容区 */}
+          <div className="flex-1 min-w-0">
+            <VideoPlayer 
+              videoUrl={videoInfo.urls['1']} 
+              title={videoInfo.title}
+            />
 
-        <div className="mt-4 bg-white rounded-lg shadow p-4">
-          <h1 className="text-2xl font-bold mb-2">{videoInfo.title}</h1>
-          <div className="flex items-center text-gray-600 text-sm mb-4">
-            <span>{videoInfo.owner.name}</span>
-            <span className="mx-2">•</span>
-            <span>{new Date(videoInfo.pubdate * 1000).toLocaleDateString()}</span>
+            <div className="mt-4 bg-white rounded-lg shadow p-4">
+              <h1 className="text-2xl font-bold mb-2">{videoInfo.title}</h1>
+              <div className="flex items-center text-gray-600 text-sm mb-4">
+                <span>{videoInfo.uploader.name}</span>
+                <span className="mx-2">•</span>
+                <span>{new Date(videoInfo.pubdate * 1000).toLocaleDateString()}</span>
+              </div>
+              <p className="text-gray-700">{videoInfo.description}</p>
+            </div>
+
+            <div className="mt-4 flex space-x-4">
+              <button 
+                onClick={() => {/* 实现收藏功能 */}}
+                className="px-4 py-2 bg-primary-main text-white rounded-lg hover:bg-primary-dark transition-colors"
+              >
+                收藏视频
+              </button>
+              <button 
+                onClick={() => {/* 实现分享功能 */}}
+                className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+              >
+                分享
+              </button>
+            </div>
+
+            <CommentSection videoId={id as string} />
           </div>
-          <p className="text-gray-700">{videoInfo.description}</p>
-        </div>
 
-        {/* 功能按钮 */}
-        <div className="mt-4 flex space-x-4">
-          <button 
-            onClick={() => {/* 实现收藏功能 */}}
-            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
-          >
-            收藏视频
-          </button>
-          <button 
-            onClick={() => {/* 实现分享功能 */}}
-            className="px-4 py-2 border border-gray-300 rounded hover:bg-gray-50 transition-colors"
-          >
-            分享
-          </button>
+          {/* UP主侧边栏 */}
+          <UploaderSidebar 
+            uploader={videoInfo.uploader}
+            currentVideoId={id as string}
+          />
         </div>
-
-        {/* 添加评论组件 */}
-        <CommentSection videoId={id as string} />
       </div>
     </Layout>
   )
