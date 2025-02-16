@@ -3,7 +3,12 @@ const nextConfig = {
   reactStrictMode: true,
   transpilePackages: ['plyr'],
   images: {
-    domains: ['api.dicebear.com', 'i0.hdslb.com']
+    domains: [
+      'api.dicebear.com', 
+      'i0.hdslb.com',
+      'i1.hdslb.com',
+      'i2.hdslb.com'
+    ]
   },
   async rewrites() {
     return [
