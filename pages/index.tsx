@@ -2,14 +2,24 @@ import type { NextPage } from 'next'
 import Head from 'next/head'
 import VideoCard from '../components/VideoCard'
 
+interface VideoCardData {
+  id: string
+  title: string
+  description: string
+  thumbnail: string
+  author: string
+  views: number
+  duration: string
+}
+
 const Home: NextPage = () => {
   // 更新示例数据以匹配VideoCard的props类型
-  const exampleVideos = [
+  const exampleVideos: VideoCardData[] = [
     {
       id: 'BV1AEKNeZEf7',
       title: '示例视频 1',
       description: '这是一个示例视频描述',
-      thumbnail: 'https://i0.hdslb.com/example1.jpg',
+      thumbnail: 'https://i0.hdslb.com/bfs/archive/7c27b59d9d2a1c85c3ce5e886c5c42b6d2d0b42c.jpg',
       author: '技术UP主',
       views: 12500,
       duration: '12:30'
@@ -32,7 +42,13 @@ const Home: NextPage = () => {
           {exampleVideos.map(video => (
             <VideoCard
               key={video.id}
-              {...video}
+              id={video.id}
+              title={video.title}
+              description={video.description}
+              thumbnail={video.thumbnail}
+              author={video.author}
+              views={video.views}
+              duration={video.duration}
             />
           ))}
         </div>

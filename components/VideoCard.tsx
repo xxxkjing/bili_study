@@ -2,11 +2,11 @@ import React from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 
-interface VideoCardProps {
+export interface VideoCardProps {
   id: string
   title: string
   description: string
-  thumbnail?: string
+  thumbnail: string
   author: string
   views: number
   duration: string
