@@ -1,6 +1,7 @@
 import { useRouter } from 'next/router'
 import type { NextPage } from 'next'
 import React from 'react'
+import Head from 'next/head'
 
 // 定义组件接口
 interface VideoPlayerProps {
@@ -12,20 +13,28 @@ interface CommentSectionProps {
 }
 
 // 创建组件
-const VideoPlayer = ({ videoId }: VideoPlayerProps): React.ReactElement => {
+const VideoPlayer = ({ videoId }: VideoPlayerProps): JSX.Element => {
   return (
-    <div>
-      {/* 视频播放器实现 */}
-      <p>Video ID: {videoId}</p>
+    <div className="w-full aspect-video bg-black">
+      <iframe
+        className="w-full h-full"
+        src={`//player.bilibili.com/player.html?bvid=${videoId}&page=1`}
+        scrolling="no"
+        border="0"
+        frameBorder="no"
+        framespacing="0"
+        allowFullScreen={true}
+      ></iframe>
     </div>
   )
 }
 
-const CommentSection = ({ videoId }: CommentSectionProps): React.ReactElement => {
+const CommentSection = ({ videoId }: CommentSectionProps): JSX.Element => {
   return (
-    <div>
-      {/* 评论区实现 */}
-      <p>Comments for video: {videoId}</p>
+    <div className="mt-4 p-4 bg-white rounded-lg shadow">
+      <h2 className="text-xl font-bold mb-4">评论区</h2>
+      {/* 这里将来实现评论列表 */}
+      <p className="text-gray-600">评论功能开发中...</p>
     </div>
   )
 }
@@ -36,10 +45,15 @@ const VideoPage: NextPage = () => {
   const { id } = router.query
   
   return (
-    <div className="video-container">
-      <VideoPlayer videoId={id} />
-      <CommentSection videoId={id} />
-    </div>
+    <>
+      <Head>
+        <title>视频播放 - {id}</title>
+      </Head>
+      <div className="container mx-auto px-4 py-6">
+        <VideoPlayer videoId={id} />
+        <CommentSection videoId={id} />
+      </div>
+    </>
   )
 }
 
