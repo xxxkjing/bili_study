@@ -15,7 +15,8 @@ const VideoPlayer = ({ videoUrl, title }: VideoPlayerProps): JSX.Element => {
     const initPlyr = async () => {
       if (videoRef.current) {
         const Plyr = (await import('plyr')).default
-        import('plyr/dist/plyr.css')
+        // 使用require导入CSS
+        require('plyr/dist/plyr.css')
         
         const player = new Plyr(videoRef.current, {
           controls: [
