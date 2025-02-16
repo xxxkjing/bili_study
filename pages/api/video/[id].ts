@@ -34,7 +34,7 @@ export default async function handler(
   try {
     // 获取视频基本信息
     const infoResponse = await axios.get(
-      `https://api.bilibili.com/x/web-interface/view?bvid=${id}`,
+      `https://api.bilibili.com/x/web-interface/view?bvid=BV1pbN2eMEK4`,
       {
         headers: {
           'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
@@ -52,7 +52,7 @@ export default async function handler(
 
     // 获取视频流URL
     const playUrlResponse = await axios.get(
-      `https://api.bilibili.com/x/player/playurl?bvid=${id}&cid=${cid}&qn=80&fnval=16`,
+      `https://api.bilibili.com/x/player/playurl?bvid=BV1pbN2eMEK4&cid=${cid}&qn=80&fnval=16`,
       {
         headers: {
           'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
@@ -72,22 +72,15 @@ export default async function handler(
         id: videoInfo.owner.mid,
         name: videoInfo.owner.name,
         avatar: videoInfo.owner.face,
-        description: '这是UP主的简介',
-        followerCount: 10000,
-        videoCount: 100,
+        description: videoInfo.owner.sign || '这是UP主的简介',
+        followerCount: videoInfo.owner.fans || 0,
+        videoCount: videoInfo.owner.video_count || 0,
         playlists: [
           {
             id: 'pl1',
             title: '前端开发教程',
-            cover: 'https://example.com/cover1.jpg',
+            cover: videoInfo.pic,
             videoCount: 12,
-            updateTime: new Date().toISOString()
-          },
-          {
-            id: 'pl2',
-            title: 'React实战课程',
-            cover: 'https://example.com/cover2.jpg',
-            videoCount: 8,
             updateTime: new Date().toISOString()
           }
         ]
