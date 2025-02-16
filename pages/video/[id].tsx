@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router'
 import type { NextPage } from 'next'
-import type { ReactElement } from 'react'
+import React, { type ReactElement } from 'react'
 import Head from 'next/head'
 
 // 定义组件接口
