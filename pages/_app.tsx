@@ -1,12 +1,12 @@
 import type { AppProps } from 'next/app'
 import '../styles/globals.css'
-import Sidebar from '@/components/Sidebar'
+import Sidebar from '../components/Sidebar'
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <div className="flex min-h-screen bg-gray-50">
+    <div className="flex">
       <Sidebar />
-      <main className="flex-1 p-4">
+      <main className="flex-1 ml-64">
         <Component {...pageProps} />
       </main>
     </div>

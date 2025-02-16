@@ -1,23 +1,20 @@
+import React from 'react'
 import Link from 'next/link'
 
 const Sidebar = () => {
   return (
-    <aside className="w-64 bg-gray-100 p-4 min-h-screen">
-      <nav className="space-y-4">
-        <Link href="/" className="block hover:bg-gray-200 p-2 rounded">
-          首页
-        </Link>
-        <div>
-          <h3 className="font-bold mb-2">视频分类</h3>
-          <div className="space-y-2 pl-2">
-            <Link href="/category/education" className="block hover:bg-gray-200 p-2 rounded">
-              教育
+    <div className="w-64 h-screen bg-gray-100 fixed left-0 top-0 p-4">
+      <nav>
+        <ul>
+          <li className="mb-2">
+            <Link href="/" className="hover:text-blue-600">
+              首页
             </Link>
-            {/* 可以添加更多分类 */}
-          </div>
-        </div>
+          </li>
+          {/* 可以添加更多导航项 */}
+        </ul>
       </nav>
-    </aside>
+    </div>
   )
 }
 
