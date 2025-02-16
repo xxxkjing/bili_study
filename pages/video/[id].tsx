@@ -14,6 +14,8 @@ interface CommentSectionProps {
 
 // 创建组件
 const VideoPlayer = ({ videoId }: VideoPlayerProps) => {
+  if (!videoId) return null
+
   return (
     <div className="w-full aspect-video bg-black">
       <iframe
@@ -30,6 +32,8 @@ const VideoPlayer = ({ videoId }: VideoPlayerProps) => {
 }
 
 const CommentSection = ({ videoId }: CommentSectionProps) => {
+  if (!videoId) return null
+
   return (
     <div className="mt-4 p-4 bg-white rounded-lg shadow">
       <h2 className="text-xl font-bold mb-4">评论区</h2>
@@ -44,6 +48,15 @@ const VideoPage: NextPage = () => {
   const router = useRouter()
   const { id } = router.query
   
+  // 添加加载状态处理
+  if (!id) {
+    return (
+      <div className="container mx-auto px-4 py-6">
+        <div className="text-center">加载中...</div>
+      </div>
+    )
+  }
+
   return (
     <>
       <Head>
