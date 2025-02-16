@@ -9,7 +9,7 @@ interface VideoPlayerProps {
 
 const VideoPlayer = ({ videoUrl, title }: VideoPlayerProps): JSX.Element => {
   const videoRef = useRef<HTMLVideoElement>(null)
-  const playerRef = useRef<Plyr | null>(null)
+  const playerRef = useRef<any>(null)
 
   useEffect(() => {
     if (videoRef.current && !playerRef.current) {
@@ -47,6 +47,7 @@ const VideoPlayer = ({ videoUrl, title }: VideoPlayerProps): JSX.Element => {
         className="w-full h-full"
         crossOrigin="anonymous"
         playsInline
+        controls
       >
         <source src={videoUrl} type="video/mp4" />
         Your browser does not support the video tag.
