@@ -34,11 +34,12 @@ export default async function handler(
   try {
     // 获取视频基本信息
     const infoResponse = await axios.get(
-      `https://api.bilibili.com/x/web-interface/view?bvid=BV1pbN2eMEK4`,
+      `https://api.bilibili.com/x/web-interface/view?bvid=${id}`,
       {
         headers: {
           'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-          'Referer': 'https://www.bilibili.com'
+          'Referer': 'https://www.bilibili.com',
+          'Cookie': process.env.BILIBILI_COOKIE || ''
         }
       }
     )
@@ -99,8 +100,12 @@ export default async function handler(
     res.status(200).json(videoData)
   } catch (error) {
     console.error('Error fetching video data:', error)
+    const errorMessage = error instanceof Error ? error.message : '获取视频信息失败'
+    console.error('Error details:', errorMessage)
+    
     res.status(500).json({ 
-      error: error instanceof Error ? error.message : '获取视频信息失败'
+      error: errorMessage,
+      details: error instanceof Error ? error.stack : undefined
     })
   }
 } 

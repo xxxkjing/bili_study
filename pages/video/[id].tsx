@@ -48,14 +48,14 @@ const VideoPage = (): ReactElement => {
     
     try {
       const response = await fetch(`/api/video/${id}`)
-      const data = await response.json()
-      
-      if (data.error) {
-        throw new Error(data.error)
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || '获取视频信息失败')
       }
-      
+      const data = await response.json()
       setVideoInfo(data)
     } catch (err) {
+      console.error('Error fetching video:', err)
       setError(err instanceof Error ? err.message : '获取视频信息失败')
     } finally {
       setIsLoading(false)
@@ -75,7 +75,7 @@ const VideoPage = (): ReactElement => {
   }
 
   return (
-    <Layout title={videoInfo.title}>
+    <Layout>
       <Head>
         <title>{`${videoInfo.title} - Bilibili 学习`}</title>
       </Head>

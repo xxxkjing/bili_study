@@ -6,22 +6,13 @@ const Home: NextPage = () => {
   // 更新示例数据以匹配VideoCard的props类型
   const exampleVideos = [
     {
-      id: 'BV1234567890',
+      id: 'BV1AEKNeZEf7',
       title: '示例视频 1',
       description: '这是一个示例视频描述',
       thumbnail: 'https://i0.hdslb.com/example1.jpg',
       author: '技术UP主',
       views: 12500,
       duration: '12:30'
-    },
-    {
-      id: 'BV0987654321',
-      title: '示例视频 2',
-      description: '这是另一个示例视频描述',
-      thumbnail: 'https://i0.hdslb.com/example2.jpg',
-      author: '学习达人',
-      views: 8300,
-      duration: '15:45'
     }
   ]
 
