@@ -25,32 +25,38 @@ const VideoPage = (): ReactElement => {
   const [isLoading, setIsLoading] = React.useState(true)
   const [error, setError] = React.useState<string | null>(null)
 
-  React.useEffect(() => {
-    if (id) {
-      setIsLoading(true)
-      fetch(`/api/video/${id}`)
-        .then(res => res.json())
-        .then(data => {
-          if (data.error) {
-            throw new Error(data.error)
-          }
-          setVideoInfo(data)
-        })
-        .catch(err => {
-          setError(err.message)
-        })
-        .finally(() => {
-          setIsLoading(false)
-        })
+  const fetchVideoInfo = React.useCallback(async () => {
+    if (!id) return
+    
+    setIsLoading(true)
+    setError(null)
+    
+    try {
+      const response = await fetch(`/api/video/${id}`)
+      const data = await response.json()
+      
+      if (data.error) {
+        throw new Error(data.error)
+      }
+      
+      setVideoInfo(data)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : '获取视频信息失败')
+    } finally {
+      setIsLoading(false)
     }
   }, [id])
+
+  React.useEffect(() => {
+    fetchVideoInfo()
+  }, [fetchVideoInfo])
 
   if (isLoading) {
     return <LoadingSpinner />
   }
 
   if (error) {
-    return <ErrorMessage message={error} />
+    return <ErrorMessage message={error} onRetry={fetchVideoInfo} />
   }
 
   if (!videoInfo) {

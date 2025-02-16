@@ -22,6 +22,14 @@ const nextConfig = {
   },
   images: {
     domains: ['api.dicebear.com']
+  },
+  async rewrites() {
+    return [
+      {
+        source: '/api/bilibili/:path*',
+        destination: 'https://api.bilibili.com/:path*'
+      }
+    ]
   }
 }
 
