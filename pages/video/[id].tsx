@@ -65,7 +65,7 @@ const VideoPage = (): ReactElement => {
     fetchVideoInfo()
   }, [fetchVideoInfo])
 
-  if (isLoading) {
+  if (isLoading || !videoInfo) {
     return <LoadingSpinner />
   }
 
@@ -73,12 +73,8 @@ const VideoPage = (): ReactElement => {
     return <ErrorMessage message={error} onRetry={fetchVideoInfo} />
   }
 
-  if (!videoInfo) {
-    return <ErrorMessage message="视频信息加载失败" />
-  }
-
   return (
-    <Layout>
+    <Layout title={videoInfo.title}>
       <Head>
         <title>{`${videoInfo.title} - Bilibili 学习`}</title>
       </Head>
