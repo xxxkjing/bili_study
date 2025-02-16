@@ -18,7 +18,5 @@ module.exports = {
       borderRadius: theme.borderRadius
     },
   },
-  plugins: [
-    require('@tailwindcss/line-clamp'),
-  ],
+  plugins: []
 } 
